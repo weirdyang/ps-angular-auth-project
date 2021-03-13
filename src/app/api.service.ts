@@ -2,13 +2,14 @@ import { HttpClientModule, HttpResponse } from '@angular/common/http';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { UserData } from 'src/interfaces/UserData';
+import { environment } from '../environments/environment';
 
 @Injectable()
 export class ApiService {
   messages: Array<any> = [];
   users: Array<UserData> = [];
   test: Array<string>;
-  path: string = 'http://localhost:3000';
+  path: string = environment.path;
   constructor(private http: HttpClient) {
     this.test = ['a', 'b', 'c'];
   }
