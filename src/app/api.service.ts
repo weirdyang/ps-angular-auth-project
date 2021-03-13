@@ -6,14 +6,16 @@ import { UserData } from 'src/interfaces/UserData';
 @Injectable()
 export class ApiService {
   messages: Array<any> = [];
+  users: Array<UserData> = [];
   test: Array<string>;
+  path: string = 'http://localhost:3000';
   constructor(private http: HttpClient) {
     this.test = ['a', 'b', 'c'];
   }
 
-  getMessages() {
+  getMessages(userId: string) {
     this.http
-      .get<Array<any>>('http://localhost:3000/posts')
+      .get<Array<any>>(`${this.path}/posts/${userId}`)
       .subscribe((res) => {
         console.log(res);
         // res.forEach((ele) => this.messages.push(ele));
@@ -22,19 +24,27 @@ export class ApiService {
       });
   }
 
-  sendUserRegistration(registerData: UserData) {
+  postMessage(message: any) {
     this.http
-      .post(`http://localhost:3000/register`, registerData)
+      .post<Response>(`${this.path}/posts`, message)
       .subscribe((res) => {
         console.log(res);
+        // res.forEach((ele) => this.messages.push(ele));
+        //console.log(res.json());
       });
   }
-
-  loginUser(registerData: UserData) {
+  getUsers() {
     this.http
-      .post(`http://localhost:3000/login`, registerData)
+      .get<Array<UserData>>(`${this.path}/users`)
       .subscribe((res) => {
         console.log(res);
+        // res.forEach((ele) => this.messages.push(ele));
+        //console.log(res.json());
+        this.users = res;
       });
+  }
+  getProfile(id: string) {
+    return this.http
+      .get<UserData>(`${this.path}/profile/${id}`);
   }
 }
