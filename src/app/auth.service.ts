@@ -9,7 +9,10 @@ export class AuthService {
 
   TOKEN_KEY = 'token';
 
-  constructor(private http: HttpClient) {}
+  loggedIn: boolean;
+  constructor(private http: HttpClient) {
+    this.loggedIn = false;
+  }
 
   get token() {
     return localStorage.getItem(this.TOKEN_KEY);
@@ -19,6 +22,9 @@ export class AuthService {
     return !!localStorage.getItem(this.TOKEN_KEY);
   }
 
+  get isLoggeddIn(){
+    return this.loggedIn;
+  }
   logout() {
     localStorage.removeItem(this.TOKEN_KEY);
   }
@@ -27,14 +33,27 @@ export class AuthService {
     this.http
       .post<any>(`${this.path}/register`, registerData)
       .subscribe((res) => {
-        this.saveToken(res.token);
-        console.log(res);
+        if (res.token) {
+          this.saveToken(res.token);
+          this.loggedIn = true;
+          console.log(this.loggedIn, 'log');
+          return true;
+        } else {
+          console.log(res);
+          this.loggedIn = false;
+          return false;
+        }
       });
   }
 
   loginUser(loginData: UserData) {
     this.http.post<any>(`${this.path}/login`, loginData).subscribe((res) => {
-      this.saveToken(res.token);
+      if (res.token) {
+        this.loggedIn = true;
+        this.saveToken(res.token);
+      } else {
+        this.loggedIn = false;
+      }
       console.log(res.token);
     });
   }

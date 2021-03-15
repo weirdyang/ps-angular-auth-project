@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { ApiService} from './api.service';
 import {AuthService} from './auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -10,7 +11,9 @@ import {AuthService} from './auth.service';
 export class AppComponent {
   title = 'angular project project project';
 
-  constructor(public authService: AuthService){
-
+  constructor(public authService: AuthService, private router: Router){
+    if (!authService.isAuthenticated) {
+      router.navigate(['register']);
+    }
   }
 }
