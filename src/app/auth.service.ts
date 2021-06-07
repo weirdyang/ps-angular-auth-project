@@ -50,8 +50,9 @@ export class AuthService {
       });
   }
 
-  loginUser(loginData: UserData) {
-    this.http.post<any>(`${this.path}/login`, loginData).subscribe((res) => {
+  loginUser(loginData: UserData, callBack: Function) {
+    this.http.post<any>(`${this.path}/login`, loginData).subscribe(
+      (res) => {
       if (res.token) {
         this.loggedIn = true;
         this.saveToken(res.token);
@@ -59,7 +60,9 @@ export class AuthService {
         this.loggedIn = false;
       }
       console.log(res.token);
-    });
+    },
+    (err) => console.error(err),
+    () => callBack ? callBack(this.loggedIn): console.log('completed'));
   }
 
   saveToken(token: string) {
